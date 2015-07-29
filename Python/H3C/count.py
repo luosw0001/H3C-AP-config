@@ -2,11 +2,11 @@ __author__ = 'TIW'
 
 from H3C import ap_ip_in_use_pool
 
-import mac_address
+from H3C import mac_address
 
-import wlan_ap_all
+from H3C import wlan_ap_all
 
-import wlan_ap_connection_record_all
+from H3C import wlan_ap_connection_record_all
 
 #ac_dhcp_server_ip_in_use_list = ap_ip_in_use_pool.ac_dhcp_server_ip_in_use_list
 
