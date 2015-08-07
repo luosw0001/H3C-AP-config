@@ -1,5 +1,8 @@
 __author__ = 'TIW'
 
+# -*- coding: utf-8 -*-
+
+#AP 没有获取IP 接入交换机接口有两个MAC地址   统计哪一些APwlan_ap_connection_record_all显示注册但是没有获取IP地址没有注册的
 import sys
 
 sys.path.append(r'D:\Git\Python')

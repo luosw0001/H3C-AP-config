@@ -56,7 +56,7 @@ for item in target_list:
     print('wlan ap ' + str(item[1]) + ' model ' + item[2])
     print('serial-id ' + item[0])
     print('radio 1')
-    print('service-template 1 vlan-id 3016')
+    print('service-template 1 vlan-id 1')
     print('radio enable')
     print()
 

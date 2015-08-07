@@ -4,7 +4,9 @@ import re
 
 filename_ac_ap_all =  'display wlan ap all.txt'
 
-filename_ac_ap_all = r'D:\项目\wk\维尔纳工程标准\预配\查找AP\display wlan ap all\{0}'.format(filename_ac_ap_all)
+filename_ac_ap_all_route = 'D:\项目\wk\深圳龙华汽车站店\查找AP\display wlan ap all'
+
+filename_ac_ap_all = r'{1}\{0}'.format(filename_ac_ap_all, filename_ac_ap_all_route)
 
 file = open(filename_ac_ap_all, 'r')
 

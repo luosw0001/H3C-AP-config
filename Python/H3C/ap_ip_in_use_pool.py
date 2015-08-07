@@ -4,7 +4,9 @@ import re
 
 filename_ac_dhcp_server_ip_in_use =  'display dhcp server ip-in-use pool wlan_ap.txt'
 
-filename_ac_dhcp_server_ip_in_use = r'D:\项目\wk\维尔纳工程标准\预配\查找AP\display dhcp server ip-in-use pool wlan_ap\{0}'.format(filename_ac_dhcp_server_ip_in_use)
+filename_ac_dhcp_server_ip_in_use_route = 'D:\项目\wk\深圳龙华汽车站店\查找AP\display dhcp server ip-in-use pool wlan_ap'
+
+filename_ac_dhcp_server_ip_in_use = r'{1}\{0}'.format(filename_ac_dhcp_server_ip_in_use, filename_ac_dhcp_server_ip_in_use_route)
 
 file = open(filename_ac_dhcp_server_ip_in_use, 'r')
 
