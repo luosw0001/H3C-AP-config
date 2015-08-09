@@ -10,7 +10,7 @@ from cisco import core_arp
 
 core_arp = core_arp.core_arp()
 
-mac_address = mac_address.mac_address()
+mac_address = mac_address.mac_address()0
 
 mac_to_ip = []
 

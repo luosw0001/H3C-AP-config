@@ -6,9 +6,9 @@ import re
 
 #filename_mac_address_route = 'C:\Users\TIW\Desktop'
 
-interface_out = ['Gi1/0/25', 'Gi1/0/26', 'CPU']
+interface_out = ['Gi1/0/25', 'Gi1/0/50', 'CPU']
 
-filename_mac_address = r'C:\Users\TIW\Desktop\mac-address.txt'#.format(filename_mac_address, filename_mac_address_route)
+filename_mac_address = r'C:\Users\TIW\Desktop\mac_address.txt'#.format(filename_mac_address, filename_mac_address_route)
 
 file = open(filename_mac_address, 'r')
 
@@ -23,6 +23,11 @@ for line in file:
     else:
          mac_address_list.append(item)
 
+for item in mac_address_list:
+    print(item)
+
+
+print('#########################################################################')
 
 file.close()
 
@@ -48,6 +53,8 @@ def mac_address():
     return mac_address_list
 
 
+for item in mac_address_list:
+    print(item)
 
 
 
