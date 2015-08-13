@@ -1,6 +1,7 @@
 __author__ = 'TIW'
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 import telnetlib
 import re
 import time
@@ -32,6 +33,7 @@ command_output_more_tag_prompt = b'More'
 command_output_more_input_command = '\n'
 ### 输入的命令
 command_input = 'show mac dynamic'
+
 
 
 
@@ -141,16 +143,20 @@ class Login(object):
         return self.__tn
 
     def log_in(self):
+        # 提示要telnet的网络设备和端口
+        print('网络设备IP:', self.__host, '端口:', self.__port)
         # 实例化telnet对象，建立一个主机连接
         tn = self.__tn
         # 开启调试，按需开启，方便判断
         # telnetsession.set_debuglevel(2)
         # 区配字符，当出现'Username'时，输入用户名
-        tn.read_until(self.__login_prompt)
-        # 提示输入的用户名
-        print('Input Username:', self.__username)
-        # 输入用户名
-        tn.write((self.__username + '\n').encode('utf-8'))
+        if  self.__login_prompt in tn.read_until(self.__login_prompt):
+            # 提示输入的用户名
+            print('Input Username:', self.__username)
+            # 输入用户名
+            tn.write((self.__username + '\n').encode('utf-8'))
+        else:
+            pass
         # 区配字符，当出现'Password'时，输入密码
         tn.read_until(self.__password_prompt)
         # 提示输入的密码
@@ -176,8 +182,8 @@ class Login(object):
 
 
 
-            
-           
-           
-           
-
+a = Login()
+a.set_host('119.145.96.998')
+a.set_port(57420)
+a.log_in()
+a.log_out()

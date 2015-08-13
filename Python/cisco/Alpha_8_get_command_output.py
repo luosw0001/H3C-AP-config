@@ -2,6 +2,7 @@ __author__ = 'TIW'
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+
 import telnetlib
 import re
 import time
@@ -23,7 +24,7 @@ enable_command = 'en'
 ### Usermode提示符
 usermodtag = b'>'
 ### Sysmode提示符
-sysmodtag = b'#'
+sysmodtag = [b'#', b']']
 ### 登录网络设备时提示输入账号的提示
 login_prompt = b'Username'
 ### 登录网络设备时提示输入密码的提示
@@ -150,29 +151,49 @@ class Command(object):
 
     def command_get_output(self):
         tn = self.__tn
-        # 输入命令以获取网络设备的hostname
+        # 输入CTRL+Z前退出到原始状态
+        tn.write(b'\32\n')
+        tn.write(b'\32\n')
+        tn.write(b'\32\n')
         tn.write(self.__command_output_more_input_command.encode('utf-8'))
-        # 命令返回值前两个输出不是期望的返回值而是空值,用此命令获取下一个返回值
-        hostname = tn.read_some()
-        # 命令返回值前两个输出不是期望的返回值而是空值,用此命令获取下一个返回值
-        hostname = tn.read_some()
-        # 获取网络设备的hostname
-        hostname = (tn.read_some()).decode('utf-8')
         tn.write(self.__command_output_more_input_command.encode('utf-8'))
-        # 如果登录Sysmode成功，则出现类似#,使用SysmodTag来进行捕获
-        tn.read_until(self.__sysmodtag)
+        tn.write(self.__command_output_more_input_command.encode('utf-8'))
+        try:
+            # 暴力进入sysmode，思科华为的命令都输进去，无论什么设备百分百进入。
+            # 尝试登录sysmod，输入登录命令
+            tn.write(('system-view' + "\n").encode('utf-8'))
+            # 提示进入sysmod,以及输入的命令
+            print('Get in sysmod, input command:', self.__enable_command)
+            # 输入enable命令
+            tn.write((self.__enable_command + "\n").encode('utf-8'))
+            # 提升权限时，区配字符，当出现'Password'时，输入密码
+            tn.read_until(self.__password_prompt, timeout=1)
+            # 提示进入sysmod输入的密码
+            print('Input enable password:', self.__enable_password)
+            # 输入enable密码
+            tn.write((self.__enable_password + '\n').encode('utf-8'))
+            # 提示登录成功
+            print('Get in sysmod successfull', end='\n\n\n\n\n\n')
+        except:
+            pass
+        # 输入命令以获取网络设备的sysmodtag
+        tn.write(self.__command_output_more_input_command.encode('utf-8'))
+        # 等1秒待命令输出
+        time.sleep(1)
+        sysmodtag = ((tn.read_very_eager()).decode('utf-8')[-1]).encode('utf-8')
+        tn.write(self.__command_output_more_input_command.encode('utf-8'))
         # 提示输入的命令
         print('Input command:', self.__command_input)
         # 输入命令
         tn.write((self.__command_input + '\n').encode('utf-8'))
         # 将输入命令的返回值赋值response,命令返回值前两个输出不是期望的返回值而是空值
         response = tn.read_very_eager()
-        print(response)
         # 将输入命令的返回值赋值response，如果sysmodtag在response则表示命令输出完整，否则输入命令获取完整的命令
-        if self.__sysmodtag not in response:
+        if sysmodtag not in response:
             n = 1
-            while self.__sysmodtag not in response:
-                for i in range(2):### range(2)里面这个2是有讲究的不能少于1最好是2
+            while sysmodtag not in response:
+                # range(2)里面这个2是有讲究的不能少于1最好是2
+                for i in range(2):
                     # 命令返回值未完结时，输入继续输出命令获取值的命令
                     tn.write(self.__command_output_more_input_command.encode('utf-8'))
                     # 获取命令返回值并赋值给response， 用response捕获命令结束提示
@@ -182,8 +203,9 @@ class Command(object):
                     # 将response_format重新编码
                     response_format = response_format.decode('utf-8')
                     # 将response_format格式化
-                    response_format = re.sub(r'\x08', '', response_format)
-                    response_format = re.sub(r'--           ', '', response_format)
+                    response_format = re.sub(r'-- \x08.*\x08', '', response_format)
+                    response_format = re.sub(r'\s*.*16D', '', response_format)
+                    response_format = re.sub(r' ----', '', response_format)
                     response_format = re.split(r'\r\n', response_format)
                     # 删除命令的返回值中对于的无效返回值
                     for item in response_format:
@@ -193,30 +215,26 @@ class Command(object):
                     for item in response_format:
                         self.__command_output_list.append(item)
                     # 提示正在获取命令返回值
-                    #print(response)
+                    #print(response_format)
                     print('Getting command output, please wait.',  n, 'lines command output had gotten.')
                     n = n + 1
             # 获取完整的命令输出后提示完成
+            # print(hostname)
             print('All command output had gotten!!!')
-        #### 这些代码没用了，但是先留着可能有用    ###
-        #else:
-        #    print(2229)
-        #    response_format = response
-        #print(response_format)
-        #    response_format = response_format.decode('utf-8')
-        #    response_format = re.split(r'\r\n', response_format)
-        #    for item in response_format:
-        #        print(item)
-        #### 这些代码没用了，但是先留着可能有用    ###
-
-        for item in self.__command_output_list:
-            if hostname in item:
-                self.__command_output_list.remove(item)
+        # 这些代码没用了，但是先留着可能有用
+        else:
+            print(2229)
+            response_format = response
+            print(response_format)
+            response_format = response_format.decode('utf-8')
+            response_format = re.split(r'\r\n', response_format)
+            for item in response_format:
+                print(item)
+        # 这些代码没用了，但是先留着可能有用
+        # 删除无效的多余的非命令返回值
         for item in self.__command_output_list:
             if self.__command_output_more_tag_prompt.decode('utf-8') in item:
                 self.__command_output_list.remove(item)
         return self.__command_output_list
-
-
 
 

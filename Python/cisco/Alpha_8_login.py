@@ -1,6 +1,7 @@
 __author__ = 'TIW'
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 import telnetlib
 import re
 import time
@@ -50,7 +51,7 @@ class Login(object):
         self.__command_output_more_tag_prompt = command_output_more_tag_prompt
         self.__command_output_more_input_command = command_output_more_input_command
         self.__command_input = command_input
-        self.__tn = telnetlib.Telnet(self.__host, self.__port, timeout=50000)
+        self.__tn = telnetlib.Telnet()
 
     def set_host(self, host):
         self.__host = host
@@ -141,33 +142,47 @@ class Login(object):
         return self.__tn
 
     def log_in(self):
-        # 实例化telnet对象，建立一个主机连接
         tn = self.__tn
-        # 开启调试，按需开启，方便判断
-        # telnetsession.set_debuglevel(2)
-        # 区配字符，当出现'Username'时，输入用户名
-        tn.read_until(self.__login_prompt)
-        # 提示输入的用户名
-        print('Input Username:', self.__username)
-        # 输入用户名
-        tn.write((self.__username + '\n').encode('utf-8'))
-        # 区配字符，当出现'Password'时，输入密码
-        tn.read_until(self.__password_prompt)
-        # 提示输入的密码
-        print('Input Password:', self.__password)
-        # 输入密码
-        tn.write((self.__password + '\n').encode('utf-8'))
-        # 如果登录Usermode成功，则出现类似>,使用UsermodTag来进行捕获
-        tn.read_until(self.__usermodtag)
-        print('Get in sysmod, input command:', self.__enable_command)
-        tn.write((self.__enable_command + "\n").encode('utf-8'))
-        # 提升权限时，区配字符，当出现'Password'时，输入密码
-        tn.read_until(self.__password_prompt)
-        # 提示进入sysmod输入的密码
-        print('Input enable password:', self.__enable_password)
-        # 输入enable密码
-        tn.write((self.__enable_password + '\n').encode('utf-8'))
-        print('Login OK!!!')
+        try:
+            # 提示要telnet的网络设备和端口
+            print('网络设备IP:', self.__host, '端口:', self.__port)
+            # 实例化telnet对象，建立一个主机连接
+            tn.open(self.__host, self.__port, timeout=5)
+            print('Telnet successfull')
+            # 开启调试，按需开启，方便判断
+            # telnetsession.set_debuglevel(2)
+            # 区配字符，当出现'Username'时，输入用户名
+            try:
+                tn.read_until(self.__login_prompt, 2)
+                # 提示登录的用户名
+                print('Login Username:', self.__username)
+                # 输入用户名
+                tn.write((self.__username + '\n').encode('utf-8'))
+            except:
+                pass
+            # 区配字符，当出现'Password'时，输入密码
+            tn.read_until(self.__password_prompt)
+            # 提示输入的密码
+            print('Input Password:', self.__password)
+            # 输入密码
+            tn.write((self.__password + '\n').encode('utf-8'))
+            # 如果登录Usermode成功，则出现类似>,使用UsermodTag来进行捕获
+            tn.read_until(self.__usermodtag)
+            print('Get in sysmod, input command:', self.__enable_command)
+            # 输入enable命令
+            tn.write((self.__enable_command + "\n").encode('utf-8'))
+            # 提升权限时，区配字符，当出现'Password'时，输入密码
+            tn.read_until(self.__password_prompt)
+            # 提示进入sysmod输入的密码
+            print('Input enable password:', self.__enable_password)
+            # 输入enable密码
+            tn.write((self.__enable_password + '\n').encode('utf-8'))
+            print('Login successfull', end='\n\n\n\n\n\n')
+
+        except:
+            print('网络设备IP:', self.__host, '端口:', self.__port, '未响应')
+
+
 
     # 结束Telnet进程
     def log_out(self):
@@ -175,9 +190,4 @@ class Login(object):
         print('Logout!!!')
 
 
-
-            
-           
-           
-           
 

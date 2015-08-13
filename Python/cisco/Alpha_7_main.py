@@ -5,7 +5,9 @@ __author__ = 'TIW'
 
 import sys
 sys.path.append(r'D:\Git\Python')
+# 网络设备登录步骤模块
 from cisco import Alpha_7_login
+# 输入命令返回命令输出模块，返回的是由每一行命令输出组成的列表。
 from cisco import Alpha_7_get_command_output
 
 
@@ -35,17 +37,18 @@ command_output_more_tag_prompt = b'More'
 ### 输入命令返回值未完结时输入的命令
 command_output_more_input_command = '\n'
 ### 输入的命令
-command_input = 'show mac dynamic'
+command_input = 'ping 192.168.10.1'
 
 
 
 
-a = Alpha_7_login.Login(host, port, username, password)
-tn = a.get_tn()
-c = Alpha_7_get_command_output.Command(tn, host, port, username, password)
+a = Alpha_7_login.Login()
+c = Alpha_7_get_command_output.Command()
+c.set_tn(a.get_tn())
+c.set_command_input(command_input)
 a.log_in()
 d = c.command_get_output()
-for item in d:
-    print(d)
+for line in d:
+    print(line)
 a.log_out()
 
