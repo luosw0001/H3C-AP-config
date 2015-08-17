@@ -8,7 +8,8 @@ sys.path.append(r'D:\Git\Python')
 # 网络设备telnet登录模块
 from network_node_tools import login_1_0
 # 输入命令返回命令输出模块，返回的是由每一行命令输出组成的列表。
-from network_node_tools import get_command_output_1_0
+#from network_node_tools import get_command_output_1_0
+from network_node_tools import get_command_output_1_1
 # 网络设备非telnet登录模块
 from network_node_tools import login_without_telnet_1_0
 
@@ -100,7 +101,9 @@ def test_all():
         print(item)
     a.log_out()
 
-#test_all()
+test_all()
+
+
 
 
 a = login_1_0.Login()
@@ -127,8 +130,24 @@ a.log_out()
 
 
 
+a = login_1_0.Login()
+a.log_in()
+tn = a.get_tn()
+c = interface_info.Show_int()
+c.set_tn(tn)
+f = login_without_telnet_1_0.Command_without_telnet()
+f.set_tn(tn)
+f.set_host('192.168.10.208')
+f.log_in()
+b = interface_info.Show_int()
+b.set_tn(tn)
+#b.display_int_brief()
+#for item in b.get_display_int_brief():
+#    print(item)
 
 
+
+a.log_out()
 
 
 

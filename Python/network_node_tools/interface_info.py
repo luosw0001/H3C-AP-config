@@ -7,7 +7,7 @@ import re
 import time
 import sys
 from network_node_tools import get_command_output_1_0
-
+from network_node_tools import get_command_output_1_1
 
 ### 网络设备IP
 host = '218.17.209.74'
@@ -46,6 +46,8 @@ tn = telnetlib.Telnet()
 class Show_int(object):
     def __init__(self, tn=tn):
         self.__tn = tn
+        #self.__case = get_command_output_1_0.Command()
+        self.__case = get_command_output_1_1.Command()
 
     def set_tn(self, tn):
         self.__tn = tn
@@ -56,7 +58,7 @@ class Show_int(object):
     def show_interface_status(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('show interface status ')
         #case.set_command_input('display interface brief')
@@ -70,7 +72,7 @@ class Show_int(object):
     def show_ip_arp(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('show ip arp ')
         #case.set_command_input('display interface brief')
@@ -84,11 +86,12 @@ class Show_int(object):
     def display_int_brief(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         #case.set_command_input('show interface status ')
         case.set_command_input('display interface brief')
         case = case.command_get_output()
+        # print('DDDDDDDDDDDDDDDD', case, 'DDDDDDDDDDDDDDDDDDDDDD')
         print(end='\n\n\n')
         for item in case:
             #print(item)
@@ -99,7 +102,7 @@ class Show_int(object):
     def display_poe_interface(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('display poe interface ')
         #case.set_command_input('display interface brief')
@@ -113,7 +116,7 @@ class Show_int(object):
     def show_mac_address_table(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         #case.set_command_input('show interface status ')
         case.set_command_input('show mac-address-table')
@@ -128,7 +131,7 @@ class Show_int(object):
     def display_mac_address(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         #case.set_command_input('show interface status ')
         case.set_command_input('display mac-address')
@@ -143,7 +146,7 @@ class Show_int(object):
     def display_interface(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         #case.set_command_input('show interface status ')
         case.set_command_input('display interface')
@@ -159,7 +162,7 @@ class Show_int(object):
     def get_display_mac_address(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('display mac-address')
         case = case.command_get_output()
@@ -167,27 +170,34 @@ class Show_int(object):
         for item in case:
             if re.match(r'.*Ethernet|Eth|GE|GI|FastEthernet|GigabitEthernet.*', item):
                 item = re.split('\s*', item)
+                for items in item:
+                    if items == '':
+                        item.remove(items)
                 display_mac_address_list.append(item)
         return display_mac_address_list
 
     def get_show_interface_status(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('show interface status')
         case = case.command_get_output()
+        #print(case)
         show_interface_status_list = []
         for item in case:
             if re.match(r'^Ethernet|Eth|GE|GI|FastEthernet|GigabitEthernet', item):
                 item = re.split('\s*', item)
+                for items in item:
+                    if items == '':
+                        item.remove(items)
                 show_interface_status_list.append(item)
         return show_interface_status_list
 
     def get_show_ip_arp(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('show ip arp')
         case = case.command_get_output()
@@ -204,7 +214,7 @@ class Show_int(object):
     def get_display_int_brief(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('display interface brief')
         case = case.command_get_output()
@@ -212,13 +222,16 @@ class Show_int(object):
         for item in case:
             if re.match(r'^Ethernet|Eth|GE|GI|FastEthernet|GigabitEthernet', item):
                 item = re.split('\s*', item)
+                for items in item:
+                    if items == '':
+                        item.remove(items)
                 display_int_brief_list.append(item)
         return display_int_brief_list
 
     def get_display_poe_interface(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('display poe interface')
         case = case.command_get_output()
@@ -235,7 +248,7 @@ class Show_int(object):
     def get_show_mac_address_table(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('show mac-address-table')
         case = case.command_get_output()
@@ -252,7 +265,7 @@ class Show_int(object):
     def get_display_interface(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         #case.set_command_input('show interface status ')
         case.set_command_input('display interface')
@@ -262,7 +275,7 @@ class Show_int(object):
         list_one = []
         for item in case:
             #print(item)
-            if re.match(r'^\sEthernet\d*/*\d*/*\d*\s.*|\sEth\d*/*\d*/*\d*\s.*|\sGE\d*/*\d*/*\d*\s.*|\sGI\d*/*\d*/*\d*\s.*|\sFastEthernet\d*/*\d*/*\d*\s.*|\sGigabitEthernet\d*/*\d*/*\d*\s.*|\sDescription.*|\sPort link-type.*', item):
+            if re.match(r'^\sEthernet\d*/*\d*/*\d*\s.*|\sEth\d*/*\d*/*\d*\s.*|\sGE\d*/*\d*/*\d*\s.*|\sGI\d*/*\d*/*\d*\s.*|\sFastEthernet\d*/*\d*/*\d*\s.*|\sGigabitEthernet\d*/*\d*/*\d*\s.*|^\s*Description.*|^\s*Port link-type.*', item):
                 list_one.append(item)
         # print(list_one)
         # 将提取的信息进一步精简，格式化为列表，好提供上层处理。

@@ -6,7 +6,8 @@ import telnetlib
 import re
 import time
 import sys
-from network_node_tools import get_command_output_1_0
+#from network_node_tools import get_command_output_1_0
+from network_node_tools import get_command_output_1_1
 
 
 ### 网络设备IP
@@ -45,6 +46,8 @@ tn = telnetlib.Telnet(host, port, timeout=50000)
 class Show_info(object):
     def __init__(self, tn=tn):
         self.__tn = tn
+        #self.__case = get_command_output_1_0.Command()
+        self.__case = get_command_output_1_1.Command()
 
     def set_tn(self, tn):
         self.__tn = tn
@@ -55,7 +58,7 @@ class Show_info(object):
     def display_dhcp_server_ip_in_use_pool_wlan_ap(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('display dhcp server ip-in-use pool wlan_ap ')
         #case.set_command_input('display interface brief')
@@ -69,7 +72,7 @@ class Show_info(object):
     def display_wlan_ap_all(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('display wlan ap all ')
         #case.set_command_input('display interface brief')
@@ -83,7 +86,7 @@ class Show_info(object):
     def display_wlan_ap_connection_record_all(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('display wlan ap connection record all ')
         #case.set_command_input('display interface brief')
@@ -99,7 +102,7 @@ class Show_info(object):
     def get_display_dhcp_server_ip_in_use_pool_wlan_ap(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('display dhcp server ip-in-use pool wlan_ap')
         case = case.command_get_output()
@@ -118,7 +121,7 @@ class Show_info(object):
     def get_display_wlan_ap_all(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('display wlan ap all')
         case = case.command_get_output()
@@ -135,7 +138,7 @@ class Show_info(object):
     def get_display_wlan_ap_connection_record_all(self):
         tn = self.__tn
         # 实例化
-        case = get_command_output_1_0.Command()
+        case = self.__case
         case.set_tn(tn)
         case.set_command_input('display wlan ap connection record all')
         case = case.command_get_output()
